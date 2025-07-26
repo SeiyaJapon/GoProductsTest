@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/database"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/persistence/database"
 	"log"
 	"os"
 	"path/filepath"

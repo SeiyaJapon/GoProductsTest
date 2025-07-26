@@ -1,11 +1,12 @@
-package handlers
+package handlers_variants
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/application/usecases_variants"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/domain/product_variants"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -17,7 +18,7 @@ type mockProductByIDUseCase struct {
 	MockError   error
 }
 
-func (m *mockProductByIDUseCase) Execute(ctx context.Context, req usecases.GetProductByIDRequest) (*product.Product, error) {
+func (m *mockProductByIDUseCase) Execute(ctx context.Context, req usecases_variants.GetProductByIDRequest) (*product.Product, error) {
 	if m.MockError != nil {
 		return nil, m.MockError
 	}
@@ -34,7 +35,7 @@ func TestGetProductById_Success(t *testing.T) {
 			Code: "Accessories",
 			Name: "Accesorios",
 		},
-		Variants: []product.Variant{},
+		Variants: []product_variants.Variant{},
 	}
 
 	mockUseCase := &mockProductByIDUseCase{
@@ -43,7 +44,7 @@ func TestGetProductById_Success(t *testing.T) {
 	}
 	handler := NewProductHandler(mockUseCase)
 
-	req := httptest.NewRequest(http.MethodGet, "/product?id=1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/catalog/1", nil)
 	rr := httptest.NewRecorder()
 
 	handler.GetProductById(rr, req)
@@ -58,14 +59,14 @@ func TestGetProductById_Success(t *testing.T) {
 	}
 
 	if receivedProduct.ID != 1 {
-		t.Errorf("expected product ID 1, got %d", receivedProduct.ID)
+		t.Errorf("expected product_variants ID 1, got %d", receivedProduct.ID)
 	}
 }
 
 func TestGetProductById_InvalidID(t *testing.T) {
 	handler := NewProductHandler(&mockProductByIDUseCase{})
 
-	req := httptest.NewRequest(http.MethodGet, "/product?id=abc", nil)
+	req := httptest.NewRequest(http.MethodGet, "/catalog/abc", nil)
 	rr := httptest.NewRecorder()
 
 	handler.GetProductById(rr, req)
@@ -78,11 +79,11 @@ func TestGetProductById_InvalidID(t *testing.T) {
 func TestGetProductById_ErrorFromUseCase(t *testing.T) {
 	mockUseCase := &mockProductByIDUseCase{
 		MockProduct: nil,
-		MockError:   errors.New("product not found in use case"),
+		MockError:   errors.New("product_variants not found in use case"),
 	}
 	handler := NewProductHandler(mockUseCase)
 
-	req := httptest.NewRequest(http.MethodGet, "/product?id=1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/catalog/1", nil)
 	rr := httptest.NewRecorder()
 
 	handler.GetProductById(rr, req)

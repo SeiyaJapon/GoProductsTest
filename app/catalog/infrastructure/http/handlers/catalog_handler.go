@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/http/api"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/http/api"
 	"net/http"
 	"strconv"
 )

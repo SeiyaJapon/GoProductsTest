@@ -65,7 +65,7 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 			t.Fatalf("expected %d products, got %d", len(expectedProducts), len(products))
 		}
 		if products[0].ID != expectedProducts[0].ID || products[0].Code != expectedProducts[0].Code {
-			t.Errorf("expected product %+v, got %+v", expectedProducts[0], products[0])
+			t.Errorf("expected product_variants %+v, got %+v", expectedProducts[0], products[0])
 		}
 	})
 

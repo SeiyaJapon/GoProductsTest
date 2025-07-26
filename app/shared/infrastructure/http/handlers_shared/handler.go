@@ -1,7 +1,7 @@
-package handlers
+package handlers_shared
 
 import (
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/http/api"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/http/api"
 	"net/http"
 )
 
@@ -14,7 +14,7 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	response := Handler{Status: "OK"}
 
 	api.OKResponse(w, response)

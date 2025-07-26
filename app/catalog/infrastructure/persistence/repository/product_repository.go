@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/domain/product_variants"
 	"strconv"
 
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
@@ -59,7 +60,7 @@ func (r *ProductRepositoryImpl) FindByID(ctx context.Context, id uint) (*product
 }
 
 func mapToDomainProduct(p models.ProductModel) product.Product {
-	var variants []product.Variant
+	var variants []product_variants.Variant
 	for _, v := range p.Variants {
 		var price float64
 		price = 0
@@ -67,7 +68,7 @@ func mapToDomainProduct(p models.ProductModel) product.Product {
 			price = v.Price.InexactFloat64()
 		}
 
-		variants = append(variants, product.Variant{
+		variants = append(variants, product_variants.Variant{
 			ID:    strconv.Itoa(int(v.ID)),
 			Name:  v.Name,
 			SKU:   v.SKU,

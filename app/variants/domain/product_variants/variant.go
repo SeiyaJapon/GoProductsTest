@@ -1,4 +1,4 @@
-package product
+package product_variants
 
 type Variant struct {
 	ID        string

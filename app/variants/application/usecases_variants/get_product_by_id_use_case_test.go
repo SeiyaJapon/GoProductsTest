@@ -1,12 +1,11 @@
-package usecases
+package usecases_variants
 
 import (
 	"context"
 	"errors"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
 	"strconv"
 	"testing"
-
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
 )
 
 type mockProductRepositoryById struct {
@@ -28,7 +27,7 @@ func (m *mockProductRepositoryById) FindByID(ctx context.Context, id uint) (*pro
 func TestGetProductByIDUseCase_Execute(t *testing.T) {
 	ctx := context.Background()
 
-	t.Run("should return product when repository finds it", func(t *testing.T) {
+	t.Run("should return product_variants when repository finds it", func(t *testing.T) {
 		expectedProduct := &product.Product{
 			ID:    1,
 			Code:  "P001",
@@ -55,14 +54,14 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
 		if foundProduct == nil {
-			t.Fatal("expected a product, got nil")
+			t.Fatal("expected a product_variants, got nil")
 		}
 		if foundProduct.ID != expectedProduct.ID || foundProduct.Code != expectedProduct.Code {
-			t.Errorf("expected product %+v, got %+v", expectedProduct, foundProduct)
+			t.Errorf("expected product_variants %+v, got %+v", expectedProduct, foundProduct)
 		}
 	})
 
-	t.Run("should return nil and no error when product is not found", func(t *testing.T) {
+	t.Run("should return nil and no error when product_variants is not found", func(t *testing.T) {
 		mockRepo := &mockProductRepositoryById{
 			MockFindByIDProduct: nil,
 			MockFindByIDError:   nil,
@@ -77,7 +76,7 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
 		if foundProduct != nil {
-			t.Errorf("expected nil product, got %+v", foundProduct)
+			t.Errorf("expected nil product_variants, got %+v", foundProduct)
 		}
 	})
 
@@ -101,7 +100,7 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 			t.Errorf("expected error %v, got %v", expectedError, err)
 		}
 		if foundProduct != nil {
-			t.Errorf("expected nil product on error, got %+v", foundProduct)
+			t.Errorf("expected nil product_variants on error, got %+v", foundProduct)
 		}
 	})
 }

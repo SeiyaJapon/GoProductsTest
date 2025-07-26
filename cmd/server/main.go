@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/http/handlers"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/database"
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/repository"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/http/handlers_shared"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/persistence/database"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/application/usecases_variants"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/infrastructure/http/handlers_variants"
 	"log"
 	"net/http"
 	"os"
@@ -40,17 +43,17 @@ func main() {
 
 	// Initialize use cases
 	getCatalogUseCase := usecases.NewGetCatalogUseCase(prodRepo)
-	getProductByIDUseCase := usecases.NewGetProductByIDUseCase(prodRepo)
+	getProductByIDUseCase := usecases_variants.NewGetProductByIDUseCase(prodRepo)
 
-	// Inicialize HTTP handlers
+	// Inicialize HTTP handlers_variants
 	catHandler := handlers.NewCatalogHandler(getCatalogUseCase)
-	productHandler := handlers.NewProductHandler(getProductByIDUseCase)
+	productHandler := handlers_variants.NewProductHandler(getProductByIDUseCase)
 
 	// Set up routing
 	mux := http.NewServeMux()
-	mux.HandleFunc("/health", handlers.HealthCheck)
+	mux.HandleFunc("/health", handlers_shared.HealthCheck)
 	mux.HandleFunc("/catalog", catHandler.GetCatalog)
-	mux.HandleFunc("/product", productHandler.GetProductById)
+	mux.HandleFunc("/catalog/", productHandler.GetProductById)
 
 	// Set up the HTTP server
 	srv := &http.Server{

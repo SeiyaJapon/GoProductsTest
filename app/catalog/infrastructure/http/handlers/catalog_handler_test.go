@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
 	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/domain/product_variants"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -36,7 +37,7 @@ func TestGetCatalog_Success(t *testing.T) {
 					Code: "Clothing",
 					Name: "Ropa",
 				},
-				Variants: []product.Variant{},
+				Variants: []product_variants.Variant{},
 			},
 		},
 		MockError: nil,
