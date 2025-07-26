@@ -3,10 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/http/handlers"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/database"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/repository"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +10,9 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog"
+	"github.com/mytheresa/go-hiring-challenge/app/database"
+	"github.com/mytheresa/go-hiring-challenge/models"
 )
 
 func main() {
@@ -35,22 +34,13 @@ func main() {
 	)
 	defer close()
 
-	// Initialize repositories
-	prodRepo := repository.NewProductRepository(db)
-
-	// Initialize use cases
-	getCatalogUseCase := usecases.NewGetCatalogUseCase(prodRepo)
-	getProductByIDUseCase := usecases.NewGetProductByIDUseCase(prodRepo)
-
-	// Inicialize HTTP handlers
-	catHandler := handlers.NewCatalogHandler(getCatalogUseCase)
-	productHandler := handlers.NewProductHandler(getProductByIDUseCase)
+	// Initialize handlers
+	prodRepo := models.NewProductsRepository(db)
+	cat := catalog.NewCatalogHandler(prodRepo)
 
 	// Set up routing
 	mux := http.NewServeMux()
-	mux.HandleFunc("/health", handlers.HealthCheck)
-	mux.HandleFunc("/catalog", catHandler.GetCatalog)
-	mux.HandleFunc("/product", productHandler.GetProductById)
+	mux.HandleFunc("GET /catalog", cat.HandleGet)
 
 	// Set up the HTTP server
 	srv := &http.Server{

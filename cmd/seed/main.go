@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/database"
 	"log"
 	"os"
 	"path/filepath"
@@ -9,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/joho/godotenv"
+
+	"github.com/mytheresa/go-hiring-challenge/app/database"
 )
 
 func main() {
