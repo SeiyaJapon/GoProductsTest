@@ -1,16 +1,17 @@
-package variants
+package http
 
 import (
 	"github.com/mytheresa/go-hiring-challenge/app/shared/api"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/domain"
 	"net/http"
 	"strconv"
 )
 
 type ProductHandler struct {
-	getProductByIDUseCase GetProductByIDUseCaseInterface
+	getProductByIDUseCase domain.GetProductByIDUseCaseInterface
 }
 
-func NewProductHandler(getProductByIDUseCase GetProductByIDUseCaseInterface) *ProductHandler {
+func NewProductHandler(getProductByIDUseCase domain.GetProductByIDUseCaseInterface) *ProductHandler {
 	return &ProductHandler{
 		getProductByIDUseCase: getProductByIDUseCase,
 	}
@@ -24,7 +25,7 @@ func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	request := GetProductByIDRequest{
+	request := domain.GetProductByIDRequest{
 		ID: uint(id),
 	}
 

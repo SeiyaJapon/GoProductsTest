@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mytheresa/go-hiring-challenge/app/shared"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/persistence"
 	"log"
 	"os"
 	"path/filepath"
@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Initialize database connection
-	db, close := shared.New(
+	db, close := persistence.NewDBConnection(
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
 		os.Getenv("POSTGRES_DB"),

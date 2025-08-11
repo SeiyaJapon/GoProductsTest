@@ -3,9 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog"
-	"github.com/mytheresa/go-hiring-challenge/app/shared"
-	"github.com/mytheresa/go-hiring-challenge/app/variants"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/application"
+	httpcatalog "github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/http"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence/mysql"
+	httpshared "github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/http"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/persistence"
+	application2 "github.com/mytheresa/go-hiring-challenge/app/variants/application"
+	http2 "github.com/mytheresa/go-hiring-challenge/app/variants/infrastructure/http"
+	mysql2 "github.com/mytheresa/go-hiring-challenge/app/variants/infrastructure/persistence/mysql"
 	"log"
 	"net/http"
 	"os"
@@ -27,7 +32,7 @@ func main() {
 	defer stop()
 
 	// Initialize database connection
-	db, close := shared.New(
+	db, close := persistence.NewDBConnection(
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
 		os.Getenv("POSTGRES_DB"),
@@ -36,21 +41,21 @@ func main() {
 	defer close()
 
 	// Initialize repositories
-	prodRepo := catalog.NewProductRepository(db)
-	variantRepo := variants.NewVariantRepository(db, prodRepo)
+	prodRepo := mysql.NewProductRepository(db)
+	variantRepo := mysql2.NewVariantRepository(db, prodRepo)
 
 	// Initialize use cases
-	getCatalogUseCase := catalog.NewGetCatalogUseCase(prodRepo)
-	getProductByIDUseCase := variants.NewGetProductByIDUseCase(variantRepo)
+	getCatalogUseCase := application.NewGetCatalogUseCase(prodRepo)
+	getProductByIDUseCase := application2.NewGetProductByIDUseCase(variantRepo)
 
 	// Inicialize HTTP handlers_variants
-	catHandler := catalog.NewCatalogHandler(getCatalogUseCase)
-	productHandler := variants.NewProductHandler(getProductByIDUseCase)
+	catHandler := httpcatalog.NewCatalogHandler(getCatalogUseCase)
+	productHandler := http2.NewProductHandler(getProductByIDUseCase)
 
 	// Set up routing
 
 	router := mux.NewRouter()
-	router.HandleFunc("/health", shared.HealthCheck).Methods("GET")
+	router.HandleFunc("/health", httpshared.HealthCheck).Methods("GET")
 	router.HandleFunc("/catalog", catHandler.GetCatalog).Methods("GET")
 	router.HandleFunc("/catalog/", productHandler.GetProductById).Methods("GET")
 

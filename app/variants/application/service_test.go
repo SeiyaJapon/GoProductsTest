@@ -1,21 +1,22 @@
-package variants
+package application
 
 import (
 	"context"
 	"errors"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog"
+	domaincatalog "github.com/mytheresa/go-hiring-challenge/app/catalog/domain"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/domain"
 	"strconv"
 	"testing"
 )
 
 type mockVariantRepository struct {
-	MockFindByIDProduct *ProductWithVariants
+	MockFindByIDProduct *domain.ProductWithVariants
 	MockFindByIDError   error
 
-	MockFindVariantsByProductID []Variant
+	MockFindVariantsByProductID []domain.Variant
 }
 
-func (m *mockVariantRepository) FindByID(ctx context.Context, id uint) (*ProductWithVariants, error) {
+func (m *mockVariantRepository) FindByID(ctx context.Context, id uint) (*domain.ProductWithVariants, error) {
 	if m.MockFindByIDError != nil {
 		return nil, m.MockFindByIDError
 	}
@@ -24,13 +25,13 @@ func (m *mockVariantRepository) FindByID(ctx context.Context, id uint) (*Product
 		return nil, nil
 	}
 
-	return &ProductWithVariants{
+	return &domain.ProductWithVariants{
 		Product:  m.MockFindByIDProduct.Product,
 		Variants: m.MockFindByIDProduct.Variants,
 	}, nil
 }
 
-func (m *mockVariantRepository) FindVariantsByProductID(ctx context.Context, productID uint) ([]Variant, error) {
+func (m *mockVariantRepository) FindVariantsByProductID(ctx context.Context, productID uint) ([]domain.Variant, error) {
 	return m.MockFindVariantsByProductID, nil
 }
 
@@ -38,22 +39,22 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("should return product_variants when repository finds it", func(t *testing.T) {
-		expectedProduct := &ProductWithVariants{
-			Product: &catalog.Product{
+		expectedProduct := &domain.ProductWithVariants{
+			Product: &domaincatalog.Product{
 				ID:    1,
 				Code:  "P001",
 				Price: 75.0,
-				Category: catalog.Category{
+				Category: domaincatalog.Category{
 					ID:   strconv.Itoa(201),
 					Code: "SHOES",
 					Name: "Shoes",
 				},
 			},
-			Variants: []Variant{},
+			Variants: []domain.Variant{},
 		}
 
 		mockVariantRepo := &mockVariantRepository{
-			MockFindByIDProduct: &ProductWithVariants{
+			MockFindByIDProduct: &domain.ProductWithVariants{
 				Product:  expectedProduct.Product,
 				Variants: expectedProduct.Variants,
 			},
@@ -63,7 +64,7 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 
 		useCase := NewGetProductByIDUseCase(mockVariantRepo)
 
-		request := GetProductByIDRequest{ID: 1}
+		request := domain.GetProductByIDRequest{ID: 1}
 
 		foundProduct, err := useCase.Execute(ctx, request)
 
@@ -83,11 +84,11 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 		mockVariantRepo := &mockVariantRepository{
 			MockFindByIDProduct:         nil,
 			MockFindByIDError:           nil,
-			MockFindVariantsByProductID: []Variant{},
+			MockFindVariantsByProductID: []domain.Variant{},
 		}
 		useCase := NewGetProductByIDUseCase(mockVariantRepo)
 
-		request := GetProductByIDRequest{ID: 999}
+		request := domain.GetProductByIDRequest{ID: 999}
 
 		foundProduct, err := useCase.Execute(ctx, request)
 
@@ -105,11 +106,11 @@ func TestGetProductByIDUseCase_Execute(t *testing.T) {
 		mockVariantRepo := &mockVariantRepository{
 			MockFindByIDProduct:         nil,
 			MockFindByIDError:           expectedError,
-			MockFindVariantsByProductID: []Variant{},
+			MockFindVariantsByProductID: []domain.Variant{},
 		}
 		useCase := NewGetProductByIDUseCase(mockVariantRepo)
 
-		request := GetProductByIDRequest{ID: 1}
+		request := domain.GetProductByIDRequest{ID: 1}
 
 		foundProduct, err := useCase.Execute(ctx, request)
 

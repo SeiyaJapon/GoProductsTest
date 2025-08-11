@@ -1,16 +1,17 @@
-package catalog
+package http
 
 import (
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain"
 	"github.com/mytheresa/go-hiring-challenge/app/shared/api"
 	"net/http"
 	"strconv"
 )
 
 type CatalogHandler struct {
-	getCatalogUseCase GetCatalogUseCaseInterface
+	getCatalogUseCase domain.GetCatalogUseCaseInterface
 }
 
-func NewCatalogHandler(getCatalogUseCase GetCatalogUseCaseInterface) *CatalogHandler {
+func NewCatalogHandler(getCatalogUseCase domain.GetCatalogUseCaseInterface) *CatalogHandler {
 	return &CatalogHandler{
 		getCatalogUseCase: getCatalogUseCase,
 	}
@@ -36,7 +37,7 @@ func (h *CatalogHandler) GetCatalog(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	request := GetCatalogRequest{
+	request := domain.GetCatalogRequest{
 		Offset:   offset,
 		Limit:    limit,
 		Category: category,

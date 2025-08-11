@@ -1,4 +1,4 @@
-package catalog
+package domain
 
 type Category struct {
 	ID   string

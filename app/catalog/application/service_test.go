@@ -1,23 +1,24 @@
-package catalog
+package application
 
 import (
 	"context"
 	"errors"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain"
 	"strconv"
 	"testing"
 )
 
 type mockProductRepository struct {
-	MockFindAllProducts []Product
+	MockFindAllProducts []domain.Product
 	MockFindAllError    error
-	MockFindByIDProduct *Product
+	MockFindByIDProduct *domain.Product
 }
 
-func (m *mockProductRepository) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]Product, error) {
+func (m *mockProductRepository) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]domain.Product, error) {
 	return m.MockFindAllProducts, m.MockFindAllError
 }
 
-func (m *mockProductRepository) FindByID(ctx context.Context, id uint) (*Product, error) {
+func (m *mockProductRepository) FindByID(ctx context.Context, id uint) (*domain.Product, error) {
 	return nil, errors.New("FindByID not implemented in mock for this test")
 }
 
@@ -27,12 +28,12 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 	floatPtr := func(f float64) *float64 { return &f }
 
 	t.Run("should return products when repository finds them", func(t *testing.T) {
-		expectedProducts := []Product{
+		expectedProducts := []domain.Product{
 			{
 				ID:    1,
 				Code:  "P001",
 				Price: 100.0,
-				Category: Category{
+				Category: domain.Category{
 					ID:   strconv.Itoa(101),
 					Code: "ELECTRONICS",
 					Name: "Electronics",
@@ -47,7 +48,7 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 
 		useCase := NewGetCatalogUseCase(mockRepo)
 
-		request := GetCatalogRequest{
+		request := domain.GetCatalogRequest{
 			Offset:   0,
 			Limit:    10,
 			Category: "Electronics",
@@ -69,12 +70,12 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 
 	t.Run("should return empty slice when no products are found", func(t *testing.T) {
 		mockRepo := &mockProductRepository{
-			MockFindAllProducts: []Product{},
+			MockFindAllProducts: []domain.Product{},
 			MockFindAllError:    nil,
 		}
 		useCase := NewGetCatalogUseCase(mockRepo)
 
-		request := GetCatalogRequest{Offset: 0, Limit: 10, Category: "Books", PriceLt: nil}
+		request := domain.GetCatalogRequest{Offset: 0, Limit: 10, Category: "Books", PriceLt: nil}
 
 		products, err := useCase.Execute(ctx, request)
 
@@ -95,7 +96,7 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 		}
 		useCase := NewGetCatalogUseCase(mockRepo)
 
-		request := GetCatalogRequest{Offset: 0, Limit: 10, Category: "Tools", PriceLt: floatPtr(50.0)}
+		request := domain.GetCatalogRequest{Offset: 0, Limit: 10, Category: "Tools", PriceLt: floatPtr(50.0)}
 
 		products, err := useCase.Execute(ctx, request)
 

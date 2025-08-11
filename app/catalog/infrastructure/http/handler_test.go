@@ -1,9 +1,10 @@
-package catalog
+package http
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -11,11 +12,11 @@ import (
 )
 
 type mockCatalogUseCase struct {
-	MockProducts []Product
+	MockProducts []domain.Product
 	MockError    error
 }
 
-func (m *mockCatalogUseCase) Execute(ctx context.Context, req GetCatalogRequest) ([]Product, error) {
+func (m *mockCatalogUseCase) Execute(ctx context.Context, req domain.GetCatalogRequest) ([]domain.Product, error) {
 	if m.MockError != nil {
 		return nil, m.MockError
 	}
@@ -24,12 +25,12 @@ func (m *mockCatalogUseCase) Execute(ctx context.Context, req GetCatalogRequest)
 
 func TestGetCatalog_Success(t *testing.T) {
 	mockUseCase := &mockCatalogUseCase{
-		MockProducts: []Product{
+		MockProducts: []domain.Product{
 			{
 				ID:    1,
 				Code:  "P001",
 				Price: 150.0,
-				Category: Category{
+				Category: domain.Category{
 					ID:   strconv.Itoa(101),
 					Code: "Clothing",
 					Name: "Ropa",
@@ -49,7 +50,7 @@ func TestGetCatalog_Success(t *testing.T) {
 		t.Fatalf("expected status %d, got %d", http.StatusOK, rr.Code)
 	}
 
-	var products []Product
+	var products []domain.Product
 	if err := json.Unmarshal(rr.Body.Bytes(), &products); err != nil {
 		t.Fatalf("failed to parse response: %v", err)
 	}

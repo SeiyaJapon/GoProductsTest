@@ -1,7 +1,9 @@
-package catalog
+package mysql
 
 import (
 	"context"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain"
+	"github.com/mytheresa/go-hiring-challenge/app/catalog/infrastructure/persistence"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -15,8 +17,8 @@ func NewProductRepository(db *gorm.DB) *ProductRepositoryImpl {
 	return &ProductRepositoryImpl{db: db}
 }
 
-func (r *ProductRepositoryImpl) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]Product, error) {
-	var productModels []ProductModel
+func (r *ProductRepositoryImpl) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]domain.Product, error) {
+	var productModels []persistence.ProductModel
 	query := r.db.WithContext(ctx).Preload("Category")
 
 	if category != "" {
@@ -38,7 +40,7 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, offset int, limit i
 		return nil, err
 	}
 
-	products := make([]Product, len(productModels))
+	products := make([]domain.Product, len(productModels))
 	for i, p := range productModels {
 		products[i] = mapToDomainProduct(p)
 	}
@@ -46,8 +48,8 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, offset int, limit i
 	return products, nil
 }
 
-func (r *ProductRepositoryImpl) FindByID(ctx context.Context, id uint) (*Product, error) {
-	var p ProductModel
+func (r *ProductRepositoryImpl) FindByID(ctx context.Context, id uint) (*domain.Product, error) {
+	var p persistence.ProductModel
 	if err := r.db.WithContext(ctx).Preload("Category").First(&p, id).Error; err != nil {
 		return nil, err
 	}
@@ -56,7 +58,7 @@ func (r *ProductRepositoryImpl) FindByID(ctx context.Context, id uint) (*Product
 	return &domainProduct, nil
 }
 
-func mapToDomainProduct(p ProductModel) Product {
+func mapToDomainProduct(p persistence.ProductModel) domain.Product {
 	var productPrice float64
 	if p.Price != nil {
 		productPrice = p.Price.InexactFloat64()
@@ -64,18 +66,18 @@ func mapToDomainProduct(p ProductModel) Product {
 		productPrice = 0
 	}
 
-	var category Category
+	var category domain.Category
 	if p.Category.ID != 0 {
-		category = Category{
+		category = domain.Category{
 			ID:   strconv.Itoa(int(p.Category.ID)),
 			Code: p.Category.Code,
 			Name: p.Category.Name,
 		}
 	} else {
-		category = Category{}
+		category = domain.Category{}
 	}
 
-	return Product{
+	return domain.Product{
 		ID:       p.ID,
 		Code:     p.Code,
 		Price:    productPrice,

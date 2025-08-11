@@ -1,4 +1,4 @@
-package variants
+package domain
 
 type Variant struct {
 	ID        string

@@ -1,4 +1,4 @@
-package shared
+package http
 
 import (
 	"github.com/mytheresa/go-hiring-challenge/app/shared/api"

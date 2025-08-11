@@ -1,21 +1,22 @@
-package variants
+package http
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog"
+	domaincatalog "github.com/mytheresa/go-hiring-challenge/app/catalog/domain"
+	"github.com/mytheresa/go-hiring-challenge/app/variants/domain"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 type mockProductByIDUseCase struct {
-	MockProduct *ProductWithVariants
+	MockProduct *domain.ProductWithVariants
 	MockError   error
 }
 
-func (m *mockProductByIDUseCase) Execute(ctx context.Context, req GetProductByIDRequest) (*ProductWithVariants, error) {
+func (m *mockProductByIDUseCase) Execute(ctx context.Context, req domain.GetProductByIDRequest) (*domain.ProductWithVariants, error) {
 	if m.MockError != nil {
 		return nil, m.MockError
 	}
@@ -23,18 +24,18 @@ func (m *mockProductByIDUseCase) Execute(ctx context.Context, req GetProductByID
 }
 
 func TestGetProductById_Success(t *testing.T) {
-	mockProduct := &ProductWithVariants{
-		Product: &catalog.Product{
+	mockProduct := &domain.ProductWithVariants{
+		Product: &domaincatalog.Product{
 			ID:    1,
 			Code:  "P001",
 			Price: 50.0,
-			Category: catalog.Category{
+			Category: domaincatalog.Category{
 				ID:   "1",
 				Code: "Accessories",
 				Name: "Accesorios",
 			},
 		},
-		Variants: []Variant{
+		Variants: []domain.Variant{
 			{
 				ID:    "1",
 				Name:  "Variant 1",
@@ -58,7 +59,7 @@ func TestGetProductById_Success(t *testing.T) {
 		t.Fatalf("expected status %d, got %d", http.StatusOK, rr.Code)
 	}
 
-	var receivedProduct ProductWithVariants
+	var receivedProduct domain.ProductWithVariants
 	if err := json.Unmarshal(rr.Body.Bytes(), &receivedProduct); err != nil {
 		t.Fatalf("failed to parse response: %v", err)
 	}

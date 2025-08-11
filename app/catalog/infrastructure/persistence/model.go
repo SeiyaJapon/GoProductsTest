@@ -1,4 +1,4 @@
-package catalog
+package persistence
 
 import (
 	"github.com/shopspring/decimal"
