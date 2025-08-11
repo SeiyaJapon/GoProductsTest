@@ -10,6 +10,7 @@ type CategoryModel struct {
 	Name string `gorm:"not null"`
 }
 
+// CategoryModel represents a category in the database.
 func (CategoryModel) TableName() string {
 	return "categories"
 }
@@ -22,6 +23,7 @@ type ProductModel struct {
 	Category   CategoryModel    `gorm:"foreignKey:CategoryID"`
 }
 
+// ProductModel represents a product in the database.
 func (ProductModel) TableName() string {
 	return "products"
 }

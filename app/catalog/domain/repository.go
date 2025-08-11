@@ -14,6 +14,11 @@ type GetCatalogRequest struct {
 }
 
 type Repository interface {
+	// FindAll retrieves products based on the provided criteria.
+	// It returns a slice of Product and an error if any.
 	FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]Product, error)
+
+	// FindByID retrieves a product by its ID.
+	// It returns a pointer to Product and an error if the product is not found or any other error occurs.
 	FindByID(ctx context.Context, id uint) (*Product, error)
 }

@@ -19,6 +19,8 @@ func NewVariantRepository(db *gorm.DB, productRepo domaincatalog.Repository) *Va
 	return &VariantORM{db: db, productRepo: productRepo}
 }
 
+// FindByID retrieves a product by its ID along with its variants.
+// It returns a ProductWithVariants and an error if the product is not found or any other error occurs.
 func (r *VariantORM) FindByID(ctx context.Context, id uint) (*domain.ProductWithVariants, error) {
 	product, err := r.productRepo.FindByID(ctx, id)
 	if err != nil {
@@ -36,6 +38,8 @@ func (r *VariantORM) FindByID(ctx context.Context, id uint) (*domain.ProductWith
 	}, nil
 }
 
+// FindVariantsByProductID retrieves all variants for a given product ID.
+// It returns a slice of Variant and an error if any.
 func (r *VariantORM) FindVariantsByProductID(ctx context.Context, productID uint) ([]domain.Variant, error) {
 	var variantModels []persistence.VariantModel
 	if err := r.db.WithContext(ctx).Where("product_id = ?", productID).Find(&variantModels).Error; err != nil {

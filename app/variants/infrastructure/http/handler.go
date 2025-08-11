@@ -17,6 +17,8 @@ func NewProductHandler(getProductByIDUseCase domain.GetProductByIDUseCaseInterfa
 	}
 }
 
+// GetProductById handles the HTTP GET request to retrieve a product by its ID along with its variants.
+// It expects the ID to be passed as a query parameter.
 func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)

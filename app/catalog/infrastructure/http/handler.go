@@ -17,6 +17,7 @@ func NewCatalogHandler(getCatalogUseCase domain.GetCatalogUseCaseInterface) *Cat
 	}
 }
 
+// GetCatalog handles the HTTP GET request to retrieve the product catalog.
 func (h *CatalogHandler) GetCatalog(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

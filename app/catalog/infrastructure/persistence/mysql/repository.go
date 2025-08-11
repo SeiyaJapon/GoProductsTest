@@ -17,6 +17,8 @@ func NewProductRepository(db *gorm.DB) *ProductRepositoryImpl {
 	return &ProductRepositoryImpl{db: db}
 }
 
+// FindAll retrieves products based on the provided criteria.
+// It returns a slice of Product and an error if any.
 func (r *ProductRepositoryImpl) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]domain.Product, error) {
 	var productModels []persistence.ProductModel
 	query := r.db.WithContext(ctx).Preload("Category")
@@ -48,6 +50,8 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, offset int, limit i
 	return products, nil
 }
 
+// FindByID retrieves a product by its ID.
+// It returns a pointer to Product and an error if the product is not found or any other error occurs.
 func (r *ProductRepositoryImpl) FindByID(ctx context.Context, id uint) (*domain.Product, error) {
 	var p persistence.ProductModel
 	if err := r.db.WithContext(ctx).Preload("Category").First(&p, id).Error; err != nil {

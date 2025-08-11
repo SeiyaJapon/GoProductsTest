@@ -17,6 +17,8 @@ func NewGetProductByIDUseCase(vRepo domain.VariantRepository) *GetProductByIDUse
 	}
 }
 
+// Execute retrieves a product by its ID along with its variants.
+// It returns a ProductWithVariants and an error if the product is not found or any other error occurs.
 func (uc *GetProductByIDUseCase) Execute(ctx context.Context, req domain.GetProductByIDRequest) (*domain.ProductWithVariants, error) {
 	product, err := uc.variantRepo.FindByID(ctx, req.ID)
 	if err != nil {
