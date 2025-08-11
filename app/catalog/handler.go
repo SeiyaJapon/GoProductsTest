@@ -1,17 +1,16 @@
-package handlers
+package catalog
 
 import (
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
-	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/http/api"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/api"
 	"net/http"
 	"strconv"
 )
 
 type CatalogHandler struct {
-	getCatalogUseCase usecases.GetCatalogUseCaseInterface
+	getCatalogUseCase GetCatalogUseCaseInterface
 }
 
-func NewCatalogHandler(getCatalogUseCase usecases.GetCatalogUseCaseInterface) *CatalogHandler {
+func NewCatalogHandler(getCatalogUseCase GetCatalogUseCaseInterface) *CatalogHandler {
 	return &CatalogHandler{
 		getCatalogUseCase: getCatalogUseCase,
 	}
@@ -37,7 +36,7 @@ func (h *CatalogHandler) GetCatalog(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	request := usecases.GetCatalogRequest{
+	request := GetCatalogRequest{
 		Offset:   offset,
 		Limit:    limit,
 		Category: category,

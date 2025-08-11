@@ -1,4 +1,4 @@
-package models_variants
+package variants
 
 import "github.com/shopspring/decimal"
 

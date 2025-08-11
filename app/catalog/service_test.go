@@ -1,25 +1,23 @@
-package usecases
+package catalog
 
 import (
 	"context"
 	"errors"
 	"strconv"
 	"testing"
-
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
 )
 
 type mockProductRepository struct {
-	MockFindAllProducts []product.Product
+	MockFindAllProducts []Product
 	MockFindAllError    error
-	MockFindByIDProduct *product.Product
+	MockFindByIDProduct *Product
 }
 
-func (m *mockProductRepository) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]product.Product, error) {
+func (m *mockProductRepository) FindAll(ctx context.Context, offset int, limit int, category string, priceLt *float64) ([]Product, error) {
 	return m.MockFindAllProducts, m.MockFindAllError
 }
 
-func (m *mockProductRepository) FindByID(ctx context.Context, id uint) (*product.Product, error) {
+func (m *mockProductRepository) FindByID(ctx context.Context, id uint) (*Product, error) {
 	return nil, errors.New("FindByID not implemented in mock for this test")
 }
 
@@ -29,12 +27,12 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 	floatPtr := func(f float64) *float64 { return &f }
 
 	t.Run("should return products when repository finds them", func(t *testing.T) {
-		expectedProducts := []product.Product{
+		expectedProducts := []Product{
 			{
 				ID:    1,
 				Code:  "P001",
 				Price: 100.0,
-				Category: product.Category{
+				Category: Category{
 					ID:   strconv.Itoa(101),
 					Code: "ELECTRONICS",
 					Name: "Electronics",
@@ -71,7 +69,7 @@ func TestGetCatalogUseCase_Execute(t *testing.T) {
 
 	t.Run("should return empty slice when no products are found", func(t *testing.T) {
 		mockRepo := &mockProductRepository{
-			MockFindAllProducts: []product.Product{},
+			MockFindAllProducts: []Product{},
 			MockFindAllError:    nil,
 		}
 		useCase := NewGetCatalogUseCase(mockRepo)

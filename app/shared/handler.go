@@ -1,7 +1,7 @@
-package handlers_shared
+package shared
 
 import (
-	"github.com/mytheresa/go-hiring-challenge/app/shared/infrastructure/http/api"
+	"github.com/mytheresa/go-hiring-challenge/app/shared/api"
 	"net/http"
 )
 

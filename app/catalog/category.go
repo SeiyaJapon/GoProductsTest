@@ -1,4 +1,4 @@
-package product
+package catalog
 
 type Category struct {
 	ID   string

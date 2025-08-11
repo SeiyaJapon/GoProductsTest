@@ -1,4 +1,4 @@
-package handlers_shared
+package shared
 
 import (
 	"net/http"

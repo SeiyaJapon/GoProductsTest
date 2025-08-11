@@ -1,12 +1,9 @@
-package handlers
+package catalog
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/application/usecases"
-	"github.com/mytheresa/go-hiring-challenge/app/catalog/domain/product"
-	"github.com/mytheresa/go-hiring-challenge/app/variants/domain/product_variants"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -14,11 +11,11 @@ import (
 )
 
 type mockCatalogUseCase struct {
-	MockProducts []product.Product
+	MockProducts []Product
 	MockError    error
 }
 
-func (m *mockCatalogUseCase) Execute(ctx context.Context, req usecases.GetCatalogRequest) ([]product.Product, error) {
+func (m *mockCatalogUseCase) Execute(ctx context.Context, req GetCatalogRequest) ([]Product, error) {
 	if m.MockError != nil {
 		return nil, m.MockError
 	}
@@ -27,17 +24,16 @@ func (m *mockCatalogUseCase) Execute(ctx context.Context, req usecases.GetCatalo
 
 func TestGetCatalog_Success(t *testing.T) {
 	mockUseCase := &mockCatalogUseCase{
-		MockProducts: []product.Product{
+		MockProducts: []Product{
 			{
 				ID:    1,
 				Code:  "P001",
 				Price: 150.0,
-				Category: product.Category{
+				Category: Category{
 					ID:   strconv.Itoa(101),
 					Code: "Clothing",
 					Name: "Ropa",
 				},
-				Variants: []product_variants.Variant{},
 			},
 		},
 		MockError: nil,
@@ -53,7 +49,7 @@ func TestGetCatalog_Success(t *testing.T) {
 		t.Fatalf("expected status %d, got %d", http.StatusOK, rr.Code)
 	}
 
-	var products []product.Product
+	var products []Product
 	if err := json.Unmarshal(rr.Body.Bytes(), &products); err != nil {
 		t.Fatalf("failed to parse response: %v", err)
 	}
